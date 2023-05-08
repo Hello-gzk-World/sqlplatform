@@ -1,17 +1,16 @@
-package com.example.sqlexercise.driver;
+package com.example.sqlexercise.driver.JDBC;
 
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabaseConfig;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
-import com.mysql.cj.jdbc.MysqlPooledConnection;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.PooledConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-@Slf4j(topic = "com.example.sqlexercise.driver.MysqlClient")
-public class MysqlClient implements Client {
+@Slf4j(topic = "com.example.sqlexercise.driver.JDBC.MysqlClient")
+public class MysqlClient implements JdbcClient {
 
     private MysqlConnectionPoolDataSource poolDataSource;
 

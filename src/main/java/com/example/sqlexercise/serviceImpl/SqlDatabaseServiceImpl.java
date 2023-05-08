@@ -1,8 +1,8 @@
 package com.example.sqlexercise.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
-import com.example.sqlexercise.driver.Client;
-import com.example.sqlexercise.driver.MysqlClient;
+import com.example.sqlexercise.driver.JDBC.JdbcClient;
+import com.example.sqlexercise.driver.JDBC.MysqlClient;
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabase;
 import com.example.sqlexercise.lib.SqlDatabasePool;
@@ -12,7 +12,6 @@ import com.example.sqlexercise.service.SqlDatabaseService;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -116,7 +115,7 @@ public class SqlDatabaseServiceImpl implements SqlDatabaseService {
     @Override
     public ResultOfTask runTaskOfGettingSchemaInfo(int mainId, String driver) {
         String schemaName = questionService.getSchemaNameByMainId(mainId);
-        Client client = null;
+        JdbcClient client = null;
         if (driver.equals("mysql")) {
             client = new MysqlClient();
         }
@@ -131,7 +130,7 @@ public class SqlDatabaseServiceImpl implements SqlDatabaseService {
     public ArrayList<ResultOfTask> runTaskOfUpdatingSchemaInfo(int mainId, String driver) {
         String schemaName = questionService.getSchemaNameByMainId(mainId);
         String schemaConstructor = questionService.getSchemaConstructorByMainId(mainId);
-        Client client = null;
+        JdbcClient client = null;
         if (driver.equals("mysql")) {
             client = new MysqlClient();
         }
@@ -146,7 +145,7 @@ public class SqlDatabaseServiceImpl implements SqlDatabaseService {
     @Override
     public ArrayList<ResultOfTask> runTaskOfCleaningSchema(int mainId, String driver) {
         String schemaName = questionService.getSchemaNameByMainId(mainId);
-        Client client = null;
+        JdbcClient client = null;
         if (driver.equals("mysql")) {
             client = new MysqlClient();
         }

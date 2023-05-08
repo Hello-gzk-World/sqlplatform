@@ -1,34 +1,91 @@
-package com.example.sqlexercise.driver;
+package com.example.sqlexercise.driver.JDBC;
 
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabaseConfig;
-import com.oceanbase.jdbc.OceanBasePoolDataSource;
-import lombok.extern.slf4j.Slf4j;
+import com.zaxxer.hikari.HikariDataSource;
 
-import javax.sql.PooledConnection;
 import java.sql.*;
 import java.util.ArrayList;
+import javax.sql.PooledConnection;
+import lombok.extern.slf4j.Slf4j;
+import org.postgresql.ds.PGConnectionPoolDataSource;
 
-@Slf4j(topic = "com.example.sqlexercise.driver.OceanbaseClient")
-public class OceanbaseClient implements Client{
+@Slf4j(topic = "com.example.sqlexercise.driver.JDBC.OpenGaussClient")
+public class OpenGaussClient extends AbstractJdbcClient {
 
-    private OceanBasePoolDataSource poolDataSource;
-    @Override
-    public void init(SqlDatabaseConfig config){
-        this.poolDataSource = new OceanBasePoolDataSource();
+
+    private PGConnectionPoolDataSource poolDataSource;
+
+    public static void main(String[] args) {
+        String driver = "org.postgresql.Driver";
+        String sourceURL = "jdbc:postgresql://124.71.132.75:15432/db_tpcc";
+        String userName = "gzk";
+        String password = "Secretpassword@123";
         try {
-            this.poolDataSource.setServerName(config.host);
-            this.poolDataSource.setDatabaseName(config.tags.get("schemaName").toString());
-            this.poolDataSource.setPort(config.port);
-            this.poolDataSource.setUser(config.username);
-            this.poolDataSource.setPassword(config.password);
-            this.poolDataSource.setMaxPoolSize(1024);
-            this.poolDataSource.setMinPoolSize(256);
-            this.poolDataSource.setLoginTimeout(30);
-            this.poolDataSource.setMaxIdleTime(5 * 60);
-        }catch (SQLException e){
+            // 1. 加载驱动程序
+            Class.forName(driver);
+
+
+
+
+            // 2. 获得数据库连接
+//            Connection conn = DriverManager.getConnection(sourceURL, userName, password);
+
+            // 内部连接池
+            final HikariDataSource dataSource = new HikariDataSource();
+            dataSource.setMaximumPoolSize(10);
+            dataSource.setDriverClassName(driver);
+            dataSource.setJdbcUrl("jdbc:postgresql://124.71.132.75:15432/db_tpcc");
+            dataSource.setUsername(userName);
+            dataSource.setPassword(password);
+            dataSource.setMaximumPoolSize(10);  // 设置连接池初始化大小
+//            dataSource.addDataSourceProperty("user", "root");
+//            dataSource.addDataSourceProperty("password", "OBClient");
+            dataSource.setAutoCommit(true);
+            Connection conn = dataSource.getConnection();
+
+
+            // 3. 创建表
+//            String sql = "create table test(id int, name varchar);";
+//            Statement statement = conn.createStatement();
+//            statement.execute(sql);
+
+//             4. 插入数据，预编译SQL,减少SQL执行，
+            String insertSql = "insert into test values (?, ?)";
+            PreparedStatement ps = conn.prepareStatement(insertSql);
+            ps.setInt(1, 111);
+            ps.setString(2, "test111");
+            ps.execute();
+
+            // 5. 查询结果集
+            String selectSql = "select * from test";
+            PreparedStatement psSelect = conn.prepareStatement(selectSql);
+            ResultSet rs = psSelect.executeQuery();
+            while (rs.next()) {
+                System.out.println("id = " + rs.getInt(1));
+                System.out.println("name = " + rs.getString(2));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void init(SqlDatabaseConfig config){
+        this.poolDataSource = new PGConnectionPoolDataSource();
+        this.poolDataSource.setServerName(config.host);
+        this.poolDataSource.setDatabaseName(config.tags.get("schemaName").toString());
+        this.poolDataSource.setPortNumber(config.port);
+        this.poolDataSource.setUser(config.username);
+        this.poolDataSource.setPassword(config.password);
+//            this.poolDataSource.setMaxPoolSize(1024);
+//            this.poolDataSource.setMinPoolSize(256);
+        this.poolDataSource.setLoginTimeout(30);
+//            this.poolDataSource.setMaxIdleTime(5 * 60);
+
+
+
     }
 
     @Override

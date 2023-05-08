@@ -1,8 +1,8 @@
 package com.example.sqlexercise.lib;
 
-import com.example.sqlexercise.driver.Client;
-import com.example.sqlexercise.driver.MysqlClient;
-import com.example.sqlexercise.driver.OceanbaseClient;
+import com.example.sqlexercise.driver.JDBC.JdbcClient;
+import com.example.sqlexercise.driver.JDBC.MysqlClient;
+import com.example.sqlexercise.driver.JDBC.OceanbaseClient;
 import com.mysql.cj.jdbc.Driver;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public class SqlDatabase {
     private String name;
     private String driver; //"mysql", "oceanbase"
     private SqlDatabaseConfig config;
-    private Client client;
+    private JdbcClient client;
     private SqlDatabase root;
     private Timer timer;
     public int consecutiveErrors;
