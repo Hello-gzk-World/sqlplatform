@@ -80,7 +80,7 @@ public class DockerUtils {
     public static void main(String[] args) {
         DockerUtils dockerUtils = new DockerUtils();
         DockerClient client = dockerUtils.connectDocker("tcp", "124.71.132.75", 2375);
-        dockerUtils.startContainer(client, "opengauss-test");
+        dockerUtils.startContainer(client, "opengauss");
 
         System.out.println("successfully start container!");
     }

@@ -2,7 +2,7 @@ package com.example.sqlexercise.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.sqlexercise.config.RabbitMQConfig;
+//import com.example.sqlexercise.config.RabbitMQConfig;
 import com.example.sqlexercise.data.AnswerSetMapper;
 import com.example.sqlexercise.data.BatchMapper;
 import com.example.sqlexercise.data.PassRecordMapper;
@@ -120,8 +120,9 @@ public class BatchServiceImpl implements BatchService {
         message.put("id", UUID.randomUUID().toString());
         String jsonString = JSON.toJSONString(message);
         String result = "Didn't pass";
-        result = (String) rabbitTemplate.convertSendAndReceive(RabbitMQConfig.DirectExchange,
-                RabbitMQConfig.DirectRouting, jsonString, correlationId);
+//        result = (String) rabbitTemplate.convertSendAndReceive(RabbitMQConfig.DirectExchange,
+//                RabbitMQConfig.DirectRouting, jsonString, correlationId);
+//
 //        while(result == null) {
 //            try {
 //                Thread.sleep(10000);
@@ -133,7 +134,7 @@ public class BatchServiceImpl implements BatchService {
         return result;
     }
 
-    @RabbitListener(queues = {RabbitMQConfig.DirectQueue})
+//    @RabbitListener(queues = {RabbitMQConfig.DirectQueue})
     public String batchMessageConsumer(Message message) {
         String byteMessage = new String(message.getBody(), StandardCharsets.UTF_8);
         JSONObject messageObject = JSON.parseObject(byteMessage);

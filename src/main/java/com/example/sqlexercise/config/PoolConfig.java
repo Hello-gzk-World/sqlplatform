@@ -14,6 +14,7 @@ public class PoolConfig {
     SqlDatabasePool sqlDatabasePool(){
         ArrayList<String> drivers = new ArrayList<>(Collections.singleton("mysql"));
         drivers.add("oceanbase");
+        drivers.add("openGauss");
         return new SqlDatabasePool(new DockerConfig(), drivers);
     }
 }

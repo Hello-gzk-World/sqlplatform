@@ -3,6 +3,7 @@ package com.example.sqlexercise.lib;
 import com.example.sqlexercise.driver.JDBC.JdbcClient;
 import com.example.sqlexercise.driver.JDBC.MysqlClient;
 import com.example.sqlexercise.driver.JDBC.OceanbaseClient;
+import com.example.sqlexercise.driver.JDBC.OpenGaussClient;
 import com.mysql.cj.jdbc.Driver;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -118,6 +119,9 @@ public class SqlDatabase {
                     }else if(this.driver.equals("oceanbase")){
                         this.client = new OceanbaseClient();
                     }
+                    else if(this.driver.equals("openGauss")){
+                        this.client = new OpenGaussClient();
+                    }
                     this.client.init(this.config);
                     startTimer();
                 } else {
@@ -194,12 +198,12 @@ public class SqlDatabase {
         return null;
     }
 
-    public void createUser(String sqlText, int maxRetryTimes) {
+    public void createUser(String sqlText, int maxRetryTimes, String driver) {
         for (int i = 1; i <= maxRetryTimes; i++) {
             if (i == 1) {
-                log.info("Try to execute Mysql createUser task");
+                log.info(driver+ ":Try to execute createUser task");
             } else {
-                log.info("Retry to execute Mysql createUser task in " + 2 * i + " seconds");
+                log.info(driver+" :Retry to execute createUser task in " + 2 * i + " seconds");
                 try {
                     TimeUnit.SECONDS.sleep(2 * i);
                 } catch (InterruptedException e) {

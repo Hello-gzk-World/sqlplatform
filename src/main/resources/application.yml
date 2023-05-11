@@ -4,9 +4,9 @@ spring:
     application:
         name: sqlexercise
     datasource:
-        url: jdbc:mysql://172.29.4.28:3306/sqlexercise?useUnicode=true&useJDBCCompliantTimezoneShift=true&serverTimezone=GMT%2B8&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+        url: jdbc:mysql://localhost:3306/sqlexercise?useUnicode=true&useJDBCCompliantTimezoneShift=true&serverTimezone=GMT%2B8&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
         username: root
-        password: 123456
+        password: nanda521...
 #        password: aptx4869
         driver-class-name: com.mysql.cj.jdbc.Driver
     redis:
@@ -14,11 +14,11 @@ spring:
         port: 6379
         database: 0
         connect-timeout: 30
-    rabbitmq:
-        host: 127.0.0.1
-        port: 5672
-        username: guest
-        password: guest
+#    rabbitmq:
+#        host: 127.0.0.1
+#        port: 5672
+#        username: guest
+#        password: guest
 mybatis:
     mapper-locations: classpath:dataImpl/*Mapper.xml
     configuration:

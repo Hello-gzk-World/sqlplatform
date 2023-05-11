@@ -126,7 +126,28 @@ public class DockerServer {
         CreateContainerResponse response = this.client.createContainerCmd(Constants.DockerRelated.OCEANBASE_IMAGE).withName(name)
                 .withHostConfig(hostConfig)
                 .withExposedPorts(ExposedPort.tcp(2881))
-                .withEnv("MINI_MODE=1","OB_ROOT_PASSWORD=" + password).exec();
+                .withEnv("MINI_MODE=1","OB_ROOT_PASSWORD=" + password)
+                .exec();
+        //Date: 2023.3.4
+        //Author: hewenbing
+        //经过测试，目前OB_ROOT_PASSWORD的环境配置并未生效，可能是镜像原因，obce-mini或许可以
+        log.info(name + " container " + response.getId() + " is created successfully!");
+    }
+
+    /**
+     * 创建 OpenGauss docker container
+     * @param name
+     * @param password
+     * @param port
+     */
+    public void createDockerContainerForOpenGauss(String name, String password, int port) {
+        HostConfig hostConfig = new HostConfig();
+        PortBinding portBinding = new PortBinding(Ports.Binding.bindPort(port), ExposedPort.tcp(5432));
+        hostConfig.withPortBindings(portBinding);
+        CreateContainerResponse response = this.client.createContainerCmd(Constants.DockerRelated.OPENGAUSS_IMAGE).withName(name).withPrivileged(true)
+                .withHostConfig(hostConfig)
+                .withExposedPorts(ExposedPort.tcp(5432))
+                .withEnv("GS_PASSWORD" + password).exec();
         //Date: 2023.3.4
         //Author: hewenbing
         //经过测试，目前OB_ROOT_PASSWORD的环境配置并未生效，可能是镜像原因，obce-mini或许可以
@@ -160,4 +181,5 @@ public class DockerServer {
     public void stopDockerContainerById(String Id) {
         this.client.stopContainerCmd(Id).exec();
     }
+
 }

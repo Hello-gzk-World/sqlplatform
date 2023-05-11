@@ -65,6 +65,16 @@ public class Constants {
         public static final String OCEANBASE_IMAGE = OCEANBASE_IMAGE_NAME + ":" + OCEANBASE_IMAGE_TAG;
         public static final int OCEANBASE_CONTAINER_DEFAULT_PORT = 2881;
         public static final String OCEANBASE = "oceanbase";
+
+        /**
+         * openGauss docker image(官方镜像用不了)
+         * openGauss默认端口
+         */
+        public static final String OPENGAUSS_IMAGE_NAME = "enmotech/opengauss";
+        public static final String OPENGAUSS_IMAGE_TAG = "latest";
+        public static final String OPENGAUSS_IMAGE = OPENGAUSS_IMAGE_NAME + ":" + OPENGAUSS_IMAGE_TAG;
+        public static final int OPENGAUSS_CONTAINER_DEFAULT_PORT = 5432;
+        public static final String OPENGAUSS = "openGauss";
     }
 
     /**

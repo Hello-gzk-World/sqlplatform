@@ -3,6 +3,7 @@ package com.example.sqlexercise.driver.JDBC;
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabaseConfig;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.PooledConnection;
@@ -13,6 +14,59 @@ import java.util.ArrayList;
 public class MysqlClient implements JdbcClient {
 
     private MysqlConnectionPoolDataSource poolDataSource;
+
+
+    public static void main(String[] args) {
+        String driver = "org.postgresql.Driver";
+        String sourceURL = "jdbc:postgresql://124.71.132.75:15432/db_tpcc";
+        String userName = "gzk";
+        String password = "Secretpassword@123";
+        try {
+            // 1. 加载驱动程序
+            Class.forName(driver);
+
+            // 内部连接池
+            final HikariDataSource dataSource = new HikariDataSource();
+            dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/");
+            dataSource.setUsername("root");
+            dataSource.setPassword(password);
+            dataSource.setMaximumPoolSize(10);
+//            dataSource.addDataSourceProperty("user", "gaussdb");
+//            dataSource.addDataSourceProperty("password", password);
+//            dataSource.addDataSourceProperty("databaseName","kkk");
+            dataSource.setAutoCommit(false);
+            Connection conn = dataSource.getConnection();
+
+
+            // 3. 创建表
+            String database="test";
+            String initSchemaSql =  "CREATE DATABASE IF NOT EXISTS "+database+";\nUse "+database+";\n";
+
+
+            String sql = "create table test(id int, name varchar);";
+            Statement statement = conn.createStatement();
+            statement.execute(sql);
+
+//             4. 插入数据，预编译SQL,减少SQL执行，
+            String insertSql = "insert into test values (?, ?)";
+            PreparedStatement ps = conn.prepareStatement(insertSql);
+            ps.setInt(1, 1111);
+            ps.setString(2, "test1111");
+            ps.execute();
+
+            // 5. 查询结果集
+            String selectSql = "select * from test";
+            PreparedStatement psSelect = conn.prepareStatement(selectSql);
+            ResultSet rs = psSelect.executeQuery();
+            while (rs.next()) {
+                System.out.println("id = " + rs.getInt(1));
+                System.out.println("name = " + rs.getString(2));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void init(SqlDatabaseConfig config){

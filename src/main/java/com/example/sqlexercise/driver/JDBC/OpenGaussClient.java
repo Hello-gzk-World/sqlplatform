@@ -2,19 +2,20 @@ package com.example.sqlexercise.driver.JDBC;
 
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabaseConfig;
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
 import java.util.ArrayList;
-import javax.sql.PooledConnection;
+import java.util.Properties;
+
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.ds.PGConnectionPoolDataSource;
 
 @Slf4j(topic = "com.example.sqlexercise.driver.JDBC.OpenGaussClient")
 public class OpenGaussClient extends AbstractJdbcClient {
 
 
-    private PGConnectionPoolDataSource poolDataSource;
+    private HikariDataSource poolDataSource;
 
     public static void main(String[] args) {
         String driver = "org.postgresql.Driver";
@@ -25,46 +26,160 @@ public class OpenGaussClient extends AbstractJdbcClient {
             // 1. 加载驱动程序
             Class.forName(driver);
 
+//            // 内部连接池
+//            final HikariDataSource dataSource = new HikariDataSource();
+//            dataSource.setDriverClassName(driver);
+//            dataSource.setJdbcUrl("jdbc:postgresql://124.71.132.75:15432/postgres");
+//            dataSource.setUsername("gaussdb");
+//            dataSource.setPassword(password);
+//            dataSource.setMaximumPoolSize(10);
+//            dataSource.setAutoCommit(false);
+            Connection conn = null;
+            try {
+                Properties info = new Properties();
+                info.setProperty("user","gzk");
+                info.setProperty("password",password);
+                conn = DriverManager.getConnection(sourceURL,info);
+                
+                System.out.println("连接成功！");
+            } catch (Exception var8) {
+                var8.printStackTrace();
+            }
+
+//            dataSource.addDataSourceProperty("user", "gaussdb");
+//            dataSource.addDataSourceProperty("password", password);
+//            dataSource.addDataSourceProperty("databaseName","kkk");
+//            HikariConfig config = new HikariConfig("F:\\大四\\graduation\\project\\sqlplatform\\src\\main\\java\\com\\example\\sqlexercise\\driver\\JDBC\\hikari.properties");
+//            HikariDataSource dataSource = new HikariDataSource(config);
+            
+//            Connection conn = dataSource.getConnection();
+
+            // 2. 初始化
+            String setParam="SET b_compatibility_user_host_auth TO on;";
+            Statement statement0 = conn.createStatement();
+            System.out.println(statement0.execute(setParam));
+
+            String res="SHOW b_compatibility_user_host_auth;";
+            Statement statement01 = conn.createStatement();
+            boolean execute = statement01.execute(setParam);
+            System.out.println(execute);
 
 
+//            String initSchemaUser ="CREATE USER 'sqlexercise'@'%' WITH PASSWORD  '"+password+"';\n" +
+//                    "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n";
+//            Statement statement = conn.createStatement();
+//            statement.execute(initSchemaUser);
 
-            // 2. 获得数据库连接
-//            Connection conn = DriverManager.getConnection(sourceURL, userName, password);
-
-            // 内部连接池
-            final HikariDataSource dataSource = new HikariDataSource();
-            dataSource.setMaximumPoolSize(10);
-            dataSource.setDriverClassName(driver);
-            dataSource.setJdbcUrl("jdbc:postgresql://124.71.132.75:15432/db_tpcc");
-            dataSource.setUsername(userName);
-            dataSource.setPassword(password);
-            dataSource.setMaximumPoolSize(10);  // 设置连接池初始化大小
-//            dataSource.addDataSourceProperty("user", "root");
-//            dataSource.addDataSourceProperty("password", "OBClient");
-            dataSource.setAutoCommit(true);
-            Connection conn = dataSource.getConnection();
+            String database="test";
+            String initSchemaSql =  "CREATE DATABASE IF NOT EXISTS "+database+";";
+            Statement statement2 = conn.createStatement();
+            statement2.execute(initSchemaSql);
 
 
             // 3. 创建表
 //            String sql = "create table test(id int, name varchar);";
-//            Statement statement = conn.createStatement();
-//            statement.execute(sql);
+//            Statement statement3 = conn.createStatement();
+//            statement3.execute(sql);
+//
+////             4. 插入数据，预编译SQL,减少SQL执行，
+//            String insertSql = "insert into test values (?, ?)";
+//            PreparedStatement ps = conn.prepareStatement(insertSql);
+//            ps.setInt(1, 1111);
+//            ps.setString(2, "test1111");
+//            ps.execute();
+//
+//            // 5. 查询结果集
+//            String selectSql = "select * from test";
+//            PreparedStatement psSelect = conn.prepareStatement(selectSql);
+//            ResultSet rs = psSelect.executeQuery();
+//            while (rs.next()) {
+//                System.out.println("id = " + rs.getInt(1));
+//                System.out.println("name = " + rs.getString(2));
+//            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-//             4. 插入数据，预编译SQL,减少SQL执行，
-            String insertSql = "insert into test values (?, ?)";
-            PreparedStatement ps = conn.prepareStatement(insertSql);
-            ps.setInt(1, 111);
-            ps.setString(2, "test111");
-            ps.execute();
+    void test(){
+        String driver = "org.postgresql.Driver";
+        String sourceURL = "jdbc:postgresql://124.71.132.75:15432/db_tpcc";
+        String userName = "gzk";
+        String password = "Secretpassword@123";
+        try {
+            // 1. 加载驱动程序
+            Class.forName(driver);
 
-            // 5. 查询结果集
-            String selectSql = "select * from test";
-            PreparedStatement psSelect = conn.prepareStatement(selectSql);
-            ResultSet rs = psSelect.executeQuery();
-            while (rs.next()) {
-                System.out.println("id = " + rs.getInt(1));
-                System.out.println("name = " + rs.getString(2));
+//            // 内部连接池
+//            final HikariDataSource dataSource = new HikariDataSource();
+//            dataSource.setDriverClassName(driver);
+//            dataSource.setJdbcUrl("jdbc:postgresql://124.71.132.75:15432/postgres");
+//            dataSource.setUsername("gaussdb");
+//            dataSource.setPassword(password);
+//            dataSource.setMaximumPoolSize(10);
+//            dataSource.setAutoCommit(false);
+            Connection conn = null;
+            try {
+                Properties info = new Properties();
+                info.setProperty("user","gzk");
+                info.setProperty("password",password);
+                conn = DriverManager.getConnection(sourceURL,info);
+
+                System.out.println("连接成功！");
+            } catch (Exception var8) {
+                var8.printStackTrace();
             }
+
+//            dataSource.addDataSourceProperty("user", "gaussdb");
+//            dataSource.addDataSourceProperty("password", password);
+//            dataSource.addDataSourceProperty("databaseName","kkk");
+//            HikariConfig config = new HikariConfig("F:\\大四\\graduation\\project\\sqlplatform\\src\\main\\java\\com\\example\\sqlexercise\\driver\\JDBC\\hikari.properties");
+//            HikariDataSource dataSource = new HikariDataSource(config);
+
+//            Connection conn = dataSource.getConnection();
+
+            // 2. 初始化
+            String setParam="SET b_compatibility_user_host_auth TO on;";
+            Statement statement0 = conn.createStatement();
+            System.out.println(statement0.execute(setParam));
+
+            String res="SHOW b_compatibility_user_host_auth;";
+            Statement statement01 = conn.createStatement();
+            boolean execute = statement01.execute(setParam);
+            System.out.println(execute);
+
+
+            String initSchemaUser ="CREATE USER 'sqlexercise'@'%' WITH PASSWORD  '"+password+"';\n" +
+                    "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n";
+            Statement statement = conn.createStatement();
+            statement.execute(initSchemaUser);
+
+            String database="test";
+            String initSchemaSql =  "CREATE DATABASE IF NOT EXISTS "+database+";\nUse "+database+";\n";
+            Statement statement2 = conn.createStatement();
+            statement2.execute(initSchemaSql);
+
+
+            // 3. 创建表
+//            String sql = "create table test(id int, name varchar);";
+//            Statement statement3 = conn.createStatement();
+//            statement3.execute(sql);
+//
+////             4. 插入数据，预编译SQL,减少SQL执行，
+//            String insertSql = "insert into test values (?, ?)";
+//            PreparedStatement ps = conn.prepareStatement(insertSql);
+//            ps.setInt(1, 1111);
+//            ps.setString(2, "test1111");
+//            ps.execute();
+//
+//            // 5. 查询结果集
+//            String selectSql = "select * from test";
+//            PreparedStatement psSelect = conn.prepareStatement(selectSql);
+//            ResultSet rs = psSelect.executeQuery();
+//            while (rs.next()) {
+//                System.out.println("id = " + rs.getInt(1));
+//                System.out.println("name = " + rs.getString(2));
+//            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -73,18 +188,15 @@ public class OpenGaussClient extends AbstractJdbcClient {
 
     @Override
     public void init(SqlDatabaseConfig config){
-        this.poolDataSource = new PGConnectionPoolDataSource();
-        this.poolDataSource.setServerName(config.host);
-        this.poolDataSource.setDatabaseName(config.tags.get("schemaName").toString());
-        this.poolDataSource.setPortNumber(config.port);
-        this.poolDataSource.setUser(config.username);
+        this.poolDataSource=new HikariDataSource();
+        String driver = "org.postgresql.Driver";
+        this.poolDataSource.setDriverClassName(driver);
+        String jdbcUrl="jdbc:postgresql://124.71.132.75:"+config.port+"/"+config.tags.get("schemaName").toString();
+        log.info("jdbcURl:"+jdbcUrl);
+        this.poolDataSource.setJdbcUrl(jdbcUrl);
+        this.poolDataSource.setUsername(config.username);
         this.poolDataSource.setPassword(config.password);
-//            this.poolDataSource.setMaxPoolSize(1024);
-//            this.poolDataSource.setMinPoolSize(256);
-        this.poolDataSource.setLoginTimeout(30);
-//            this.poolDataSource.setMaxIdleTime(5 * 60);
-
-
+        this.poolDataSource.setMaximumPoolSize(10);  // 设置连接池初始化大小
 
     }
 
@@ -97,8 +209,7 @@ public class OpenGaussClient extends AbstractJdbcClient {
     public ResultOfTask runQuery(String query){
         ResultOfTask resultOfTask = new ResultOfTask();
         try{
-            PooledConnection pooledConnections = poolDataSource.getPooledConnection();
-            Connection connection = pooledConnections.getConnection();
+            Connection connection =  poolDataSource.getConnection();
             Statement statement = connection.createStatement();
             //限制查询时间在10s以内
             statement.setQueryTimeout(10);
@@ -153,8 +264,7 @@ public class OpenGaussClient extends AbstractJdbcClient {
     @Override
     public boolean createUser(String sqlText){
         try {
-            PooledConnection connections = poolDataSource.getPooledConnection();
-            Connection connection = connections.getConnection();
+            Connection connection = poolDataSource.getConnection();
             Statement statement = connection.createStatement();
             //执行多条语句并返回第一条语句的结果;
             //true表示返回结果集为resultSet
@@ -184,8 +294,7 @@ public class OpenGaussClient extends AbstractJdbcClient {
     @Override
     public void createTable(String sqlText){
         try{
-            PooledConnection connections = poolDataSource.getPooledConnection();
-            Connection connection = connections.getConnection();
+            Connection connection = poolDataSource.getConnection();
             Statement statement = connection.createStatement();
             boolean rs = statement.execute(sqlText);
             while(true) {

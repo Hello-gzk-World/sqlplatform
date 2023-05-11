@@ -65,7 +65,7 @@ public class MyAsyncService {
         }
         sqlDatabase.createUser("CREATE USER 'sqlexercise'@'%' IDENTIFIED BY '"+container.getPassword()+"';\n" +
                 "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n" +
-                "FLUSH PRIVILEGES;", 1);
+                "FLUSH PRIVILEGES;", 1, "NySQL");
     }
 
     @Async("asyncTaskExecutor")
@@ -82,6 +82,23 @@ public class MyAsyncService {
             throw new Exception("Connection Error");
         }
         sqlDatabase.createUser("CREATE USER 'sqlexercise'@'%' IDENTIFIED BY '"+container.getPassword()+"';\n" +
-                "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n", 1);
+                "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n", 1, "Oceanase");
+    }
+
+    @Async("asyncTaskExecutor")
+    public void asyncInitOpenGaussContainer(DockerServer dockerServer, DockerContainer container, SqlDatabase sqlDatabase) throws Exception {
+        dockerServer.startDockerContainer(container.getName());
+        // 等待5*60秒以便容器内openGauss启动完成初始化
+        try {
+            TimeUnit.SECONDS.sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sqlDatabase.connect("SHOW DATABASES;", 5);
+        if(!sqlDatabase.isConnected()){
+            throw new Exception("Connection Error");
+        }
+        sqlDatabase.createUser("CREATE USER 'sqlexercise'@'%' IDENTIFIED BY '"+container.getPassword()+"';\n" +
+                "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n", 1, "OpenGauss");
     }
 }

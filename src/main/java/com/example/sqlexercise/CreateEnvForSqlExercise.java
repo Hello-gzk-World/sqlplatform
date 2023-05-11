@@ -62,7 +62,7 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
             // do nothing, 因为会确保部署时所需文件被一并上传
         }
         // 配置远端服务器的Docker，初始化sql的运行环境
-        createEnv(true);
+        createEnv(false);
         // Container mysql-1-0 uses password 77d3bc2d-d446-5b79-b64e-95cfa00dfd5c
         // Container mysql-1-1 uses password 33b60f2b-1dbb-5fe0-81a0-98252b6414bb
         // Container redis-1-0 uses password d5a32b3e-c535-58ba-aa30-57a677fbee74
@@ -89,6 +89,13 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
                 dockerServer.pullImageByRepository(Constants.DockerRelated.OCEANBASE_IMAGE_NAME, Constants.DockerRelated.OCEANBASE_IMAGE_TAG);
             }
             log.info("After checking, image " + Constants.DockerRelated.OCEANBASE_IMAGE + " exists.");
+            // 检查openGauss镜像
+            image = dockerServer.getDockerImageByReference(Constants.DockerRelated.OPENGAUSS_IMAGE);
+            if (image == null) {
+                dockerServer.pullImageByRepository(Constants.DockerRelated.OPENGAUSS_IMAGE_NAME, Constants.DockerRelated.OPENGAUSS_IMAGE_TAG);
+            }
+            log.info("After checking, image " + Constants.DockerRelated.OPENGAUSS_IMAGE + " exists.");
+
             // 检查 Redis 镜像
 //            image = dockerServer.getDockerImageByReference(Constants.DockerRelated.REDIS_IMAGE);
 //            if (image == null) {
@@ -103,16 +110,21 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
             List<DockerContainer> dockerOceanbaseContainers =
                     createContainerInfos(dockerServer, namespace, Constants.DockerRelated.OCEANBASE,
                             Constants.DockerRelated.OCEANBASE_CONTAINER_DEFAULT_PORT, 1);
+            List<DockerContainer> dockerOpenGaussContainers =
+                    createContainerInfos(dockerServer, namespace, Constants.DockerRelated.OPENGAUSS,
+                            Constants.DockerRelated.OPENGAUSS_CONTAINER_DEFAULT_PORT, 1);
 //            List<DockerContainer> dockerRedisContainers =
 //                    createContainerInfos(dockerServer, namespace, Constants.DockerRelated.REDIS_IMAGE_NAME,
 //                            Constants.DockerRelated.REDIS_CONTAINER_DEFAULT_PORT, 1);
             // 检查dockerServer中现有容器实例情况
-            checkExistingContainerInstance(dockerMysqlContainers, dockerServer, recreate);
-            checkExistingContainerInstance(dockerOceanbaseContainers, dockerServer, recreate);
+//            checkExistingContainerInstance(dockerMysqlContainers, dockerServer, recreate);
+//            checkExistingContainerInstance(dockerOceanbaseContainers, dockerServer, recreate);
+//            checkExistingContainerInstance(dockerOpenGaussContainers, dockerServer, recreate);
 //            checkExistingContainerInstance(dockerRedisContainers, dockerServer, recreate);
             // 根据容器信息创建容器实例
-            createMysqlContainerInstance(dockerMysqlContainers, dockerServer, server);
-            createOceanbaseContainerInstance(dockerOceanbaseContainers, dockerServer, server);
+//            createMysqlContainerInstance(dockerMysqlContainers, dockerServer, server);
+//            createOceanbaseContainerInstance(dockerOceanbaseContainers, dockerServer, server);
+//            createOpenGaussContainerInstance(dockerOpenGaussContainers, dockerServer, server);
 //            createRedisContainerInstance(dockerRedisContainers, dockerServer, server);
         }
     }
@@ -122,7 +134,7 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
         List<DockerContainer> result = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             String name = imageName + "-" + dockerServer.getId() + "-" + i;
-            String password = Generators.nameBasedGenerator(namespace).generate(name).toString();
+            String password = "GS"+Generators.nameBasedGenerator(namespace).generate(name).toString();
             int port = basePort + i;
             result.add(new DockerContainer(i, name, password, port));
             log.info("Container " + name + " uses password " + password);
@@ -190,6 +202,24 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
             myAsyncService.asyncInitOceanbaseContainer(dockerServer, container, sqlDatabase);
         }
     }
+
+    private void createOpenGaussContainerInstance(List<DockerContainer> containerList, DockerServer dockerServer,
+                                              SqlServer server) throws Exception {
+        for (DockerContainer container : containerList) {
+            // 检查可用端口
+            try {
+                server.detectServerPort(true, container.getPort(), container.getPort());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            dockerServer.createDockerContainerForOpenGauss(container.getName(), container.getPassword(), container.getPort());
+            //以下部分已改成Spring异步执行，不阻塞主线程
+            SqlDatabase sqlDatabase =
+                    this.pool.getSqlDatabase("postgres", "openGauss", dockerServer.getId(), container.getIndex());
+            myAsyncService.asyncInitOpenGaussContainer(dockerServer, container, sqlDatabase);
+        }
+    }
+
 
     private void createRedisContainerInstance(List<DockerContainer> containerList, DockerServer dockerServer,
                                               SqlServer server) {
