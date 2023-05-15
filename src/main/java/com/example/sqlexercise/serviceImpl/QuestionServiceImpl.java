@@ -1,7 +1,7 @@
 package com.example.sqlexercise.serviceImpl;
 
 import com.example.sqlexercise.data.*;
-import com.example.sqlexercise.lib.Constants;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.po.*;
 import com.example.sqlexercise.service.QuestionService;
 import com.example.sqlexercise.vo.DraftVO;

@@ -1,6 +1,6 @@
 package com.example.sqlexercise.service;
 
-import com.example.sqlexercise.lib.Constants;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.po.PassRecord;
 import com.example.sqlexercise.vo.ResponseVO;
 import com.example.sqlexercise.vo.SignVO;

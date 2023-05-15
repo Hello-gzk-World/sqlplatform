@@ -82,7 +82,7 @@ public class MyAsyncService {
             throw new Exception("Connection Error");
         }
         sqlDatabase.createUser("CREATE USER 'sqlexercise'@'%' IDENTIFIED BY '"+container.getPassword()+"';\n" +
-                "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n", 1, "Oceanase");
+                "GRANT SELECT ON *.* TO 'sqlexercise'@'%';\n", 1, "Oceanbase");
     }
 
     @Async("asyncTaskExecutor")

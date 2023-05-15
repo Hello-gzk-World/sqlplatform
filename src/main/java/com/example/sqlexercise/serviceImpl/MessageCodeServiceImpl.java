@@ -1,6 +1,6 @@
 package com.example.sqlexercise.serviceImpl;
 
-import com.example.sqlexercise.lib.Constants;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.service.MessageCodeService;
 import com.example.sqlexercise.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;

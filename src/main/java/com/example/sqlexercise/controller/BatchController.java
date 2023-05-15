@@ -1,6 +1,6 @@
 package com.example.sqlexercise.controller;
 
-import com.example.sqlexercise.lib.Constants;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.service.BatchService;
 import com.example.sqlexercise.vo.BatchVO;
 import com.example.sqlexercise.vo.ResponseVO;

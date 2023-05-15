@@ -7,4 +7,5 @@ package com.example.sqlexercise.driver.JDBC;
  * @create: 2023-05-09 01:46
  **/
 public abstract class AbstractJdbcClient implements JdbcClient {
+
 }

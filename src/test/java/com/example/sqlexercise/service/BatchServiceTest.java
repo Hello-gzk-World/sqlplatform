@@ -1,7 +1,7 @@
 package com.example.sqlexercise.service;
 
 import com.example.sqlexercise.data.SubQuestionMapper;
-import com.example.sqlexercise.lib.Constants;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.po.SubQuestion;
 import com.example.sqlexercise.vo.BatchVO;
 import org.junit.jupiter.api.Assertions;

@@ -1,6 +1,7 @@
 package com.example.sqlexercise.lib;
 
 import com.example.sqlexercise.config.DockerConfig;
+import com.example.sqlexercise.constant.DriverEnum;
 import com.fasterxml.uuid.Generators;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Scope;
@@ -11,7 +12,7 @@ import java.util.*;
 public class SqlDatabasePool {
 
     private int count;
-    private ArrayList<String> drivers;
+    private ArrayList<DriverEnum> drivers;
     private Map<String, ItemOfSqlDatabaseMap> sqlDatabaseMap;
     private int maxRows;
     private ArrayList<DockerServer> dockerServers;
@@ -20,7 +21,7 @@ public class SqlDatabasePool {
     private final String NAMESPACE_URL = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
 
     // 构造函数
-    public SqlDatabasePool(DockerConfig dockerConfig, ArrayList<String> drivers,
+    public SqlDatabasePool(DockerConfig dockerConfig, ArrayList<DriverEnum> drivers,
                            Map<String, ItemOfSqlDatabaseMap> sqlDatabaseMap) {
         this.drivers = drivers;
         this.sqlDatabaseMap = sqlDatabaseMap;
@@ -34,7 +35,7 @@ public class SqlDatabasePool {
     }
 
     // 构造函数
-    public SqlDatabasePool(DockerConfig dockerConfig, ArrayList<String> drivers) {
+    public SqlDatabasePool(DockerConfig dockerConfig, ArrayList<DriverEnum> drivers) {
         this.drivers = drivers;
         this.sqlDatabaseMap = new HashMap<>();
         this.dockerServers = dockerConfig.getDockerServers();
@@ -60,7 +61,7 @@ public class SqlDatabasePool {
             inRoot = getItemOfMap("");
         }
         ItemOfSqlDatabaseMap inSchema = new ItemOfSqlDatabaseMap();
-        for (String driver : this.drivers) {
+        for (DriverEnum driverEnum : this.drivers) {
             Map inDriver = new HashMap<String, ArrayList<SqlDatabase>>();
             for (String server : this.servers) {
                 ArrayList<SqlDatabase> inServer = new ArrayList<>();
@@ -70,35 +71,38 @@ public class SqlDatabasePool {
                             SqlDatabaseConfig config = new SqlDatabaseConfig();
                             config.tags = new HashMap<>();
                             config.tags.put("schemaName", schemaName);
-                            config.tags.put("driver", driver);
+                            config.tags.put("driver", driverEnum.getName());
                             config.tags.put("server", server);
                             config.tags.put("index", i);
                             config.host = e.getHost();
                             // todo 重构代码
-                            if (driver.equals("mysql")) {
-                                config.port = 3310 + i;
-                            }
-                            else if (driver.equals("oceanbase")){
-                                config.port = 2881 + i;
-                            }
-                            else if(driver.equals("openGauss")){
-                                config.port = 5432 + i;
-                            }
-                            config.username = schemaName.isEmpty() ? "root" : "sqlexercise";
-                            if (schemaName.isEmpty() && driver.equals("oceanbase")) {
-                                config.password = "";
-                            }
-                            else if(schemaName.isEmpty() && driver.equals("openGauss")){
-                                config.password= "Secretpassword@123";
-                            }
-                            else {
-                                config.password = Generators.nameBasedGenerator(namespace).generate(driver + "-" + server + "-" + i).toString();
-                            }
+                            config.port=driverEnum.getPort()+i;
+//                            if (driver.equals("mysql")) {
+//                                config.port = 3310 + i;
+//                            }
+//                            else if (driver.equals("oceanbase")){
+//                                config.port = 2881 + i;
+//                            }
+//                            else if(driver.equals("openGauss")){
+//                                config.port = 5432 + i;
+//                            }
+
+
+//                            config.username = schemaName.isEmpty() ? "root" : "sqlexercise";
+//                            if (schemaName.isEmpty() && driver.equals("oceanbase")) {
+//                                config.password = "";
+//                            }
+//                            else if(schemaName.isEmpty() && driver.equals("openGauss")){
+//                                config.password= "Secretpassword@123";
+//                            }
+//                            else {
+//                                config.password = Generators.nameBasedGenerator(namespace).generate(driver + "-" + server + "-" + i).toString();
+//                            }
                             config.maxRows = this.maxRows;
 
                             SqlDatabase root = null;
                             if (!schemaName.isEmpty()) {
-                                root = inRoot.itemOfSqlDatabaseMap.get(driver).get(server).get(i);
+                                root = inRoot.itemOfSqlDatabaseMap.get(driverEnum.getName()).get(server).get(i);
                             }
                             inServer.add(new SqlDatabase(config, root));
                         }
@@ -107,10 +111,17 @@ public class SqlDatabasePool {
                 }
                 inDriver.put(server, inServer);
             }
-            inSchema.itemOfSqlDatabaseMap.put(driver, inDriver);
+            inSchema.itemOfSqlDatabaseMap.put(driverEnum.getName(), inDriver);
         }
         this.sqlDatabaseMap.put(schemaName, inSchema);
         return inSchema;
+    }
+
+    /**
+     * 根据数据库driver类型进行定制化参数设置
+     */
+    private SqlDatabaseConfig createSqlDatabaseConfig(String driver, String schemaName){
+        return null;
     }
 
     /**

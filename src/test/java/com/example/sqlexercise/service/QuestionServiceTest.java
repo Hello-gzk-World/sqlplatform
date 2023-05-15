@@ -1,8 +1,7 @@
 package com.example.sqlexercise.service;
 
 import com.example.sqlexercise.data.QuestionStateMapper;
-import com.example.sqlexercise.lib.Constants;
-import com.example.sqlexercise.po.MainQuestion;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.po.QuestionState;
 import com.example.sqlexercise.po.SubQuestion;
 import com.example.sqlexercise.vo.DraftVO;
@@ -11,14 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class QuestionServiceTest {

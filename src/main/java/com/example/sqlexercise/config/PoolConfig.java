@@ -1,5 +1,6 @@
 package com.example.sqlexercise.config;
 
+import com.example.sqlexercise.constant.DriverEnum;
 import com.example.sqlexercise.lib.SqlDatabasePool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +13,9 @@ public class PoolConfig {
 
     @Bean
     SqlDatabasePool sqlDatabasePool(){
-        ArrayList<String> drivers = new ArrayList<>(Collections.singleton("mysql"));
-        drivers.add("oceanbase");
-        drivers.add("openGauss");
+        ArrayList<DriverEnum> drivers = new ArrayList<>(Collections.singleton(DriverEnum.MySQL));
+        drivers.add(DriverEnum.OceanBase);
+        drivers.add(DriverEnum.OpenGauss);
         return new SqlDatabasePool(new DockerConfig(), drivers);
     }
 }

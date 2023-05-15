@@ -1,4 +1,4 @@
-package com.example.sqlexercise.lib;
+package com.example.sqlexercise.constant;
 
 import java.util.ArrayList;
 import java.util.List;

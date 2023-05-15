@@ -2,7 +2,7 @@ package com.example.sqlexercise.serviceImpl;
 
 import com.example.sqlexercise.data.*;
 import com.example.sqlexercise.lib.PasswordHash;
-import com.example.sqlexercise.lib.Constants;
+import com.example.sqlexercise.constant.Constants;
 import com.example.sqlexercise.po.PassRecord;
 import com.example.sqlexercise.po.User;
 import com.example.sqlexercise.service.UserService;
