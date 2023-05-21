@@ -1,4 +1,4 @@
-package com.example.sqlexercise.driver.JDBC;
+package com.example.sqlexercise.driver.relational;
 
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabaseConfig;
@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 @Slf4j(topic = "com.example.sqlexercise.driver.JDBC.OceanbaseClient")
-public class OceanbaseClient extends AbstractJdbcClient {
+public class OceanbaseClient extends AbstractRelationalClient {
 
     private OceanBasePoolDataSource poolDataSource;
     @Override

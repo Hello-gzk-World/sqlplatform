@@ -1,9 +1,9 @@
 package com.example.sqlexercise.constant;
 
 import com.example.sqlexercise.driver.Client;
-import com.example.sqlexercise.driver.JDBC.MysqlClient;
-import com.example.sqlexercise.driver.JDBC.OceanbaseClient;
-import com.example.sqlexercise.driver.JDBC.OpenGaussClient;
+import com.example.sqlexercise.driver.relational.MysqlClient;
+import com.example.sqlexercise.driver.relational.OceanbaseClient;
+import com.example.sqlexercise.driver.relational.OpenGaussClient;
 
 public enum DriverEnum {
     MySQL("mysql",3306, new MysqlClient()),
@@ -39,15 +39,15 @@ public enum DriverEnum {
         return this.port;
     }
 
-    public Client getClinet(){
+    public Client getClient(){
         return this.client;
     }
 
     void testEnum() {
         DriverEnum driverEnum = DriverEnum.of(MySQL.getName());
         // 单例
-        Client clinet = driverEnum.getClinet();
-        Client clinet2 = MySQL.getClinet();
+        Client clinet = driverEnum.getClient();
+        Client clinet2 = MySQL.getClient();
         System.out.println();;
     }
 

@@ -77,27 +77,13 @@ public class SqlDatabasePool {
                             config.host = e.getHost();
                             // todo 重构代码
                             config.port=driverEnum.getPort()+i;
-//                            if (driver.equals("mysql")) {
-//                                config.port = 3310 + i;
-//                            }
-//                            else if (driver.equals("oceanbase")){
-//                                config.port = 2881 + i;
-//                            }
-//                            else if(driver.equals("openGauss")){
-//                                config.port = 5432 + i;
-//                            }
-
-
-//                            config.username = schemaName.isEmpty() ? "root" : "sqlexercise";
-//                            if (schemaName.isEmpty() && driver.equals("oceanbase")) {
-//                                config.password = "";
-//                            }
-//                            else if(schemaName.isEmpty() && driver.equals("openGauss")){
-//                                config.password= "Secretpassword@123";
-//                            }
-//                            else {
-//                                config.password = Generators.nameBasedGenerator(namespace).generate(driver + "-" + server + "-" + i).toString();
-//                            }
+                            if(schemaName.isEmpty()){
+                                config.username="root";
+                            }
+                            else{
+                                config.username="sqlexercise";
+                                config.password = "X"+Generators.nameBasedGenerator(namespace).generate(driverEnum.getName() + "-" + server + "-" + i).toString();
+                            }
                             config.maxRows = this.maxRows;
 
                             SqlDatabase root = null;

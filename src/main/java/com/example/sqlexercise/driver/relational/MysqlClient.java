@@ -1,4 +1,4 @@
-package com.example.sqlexercise.driver.JDBC;
+package com.example.sqlexercise.driver.relational;
 
 import com.example.sqlexercise.lib.ResultOfTask;
 import com.example.sqlexercise.lib.SqlDatabaseConfig;
@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 @Slf4j(topic = "com.example.sqlexercise.driver.JDBC.MysqlClient")
-public class MysqlClient implements JdbcClient {
+public class MysqlClient extends AbstractRelationalClient {
 
     private MysqlConnectionPoolDataSource poolDataSource;
 
@@ -139,15 +139,6 @@ public class MysqlClient implements JdbcClient {
                 whereSql + "\nORDER BY\nt.table_schema,\nt.table_name,\nc.ordinal_position";
     }
 
-    @Override
-    public String initSchemaSql(String database){
-        return "CREATE DATABASE IF NOT EXISTS "+database+";\nUse "+database+";\n";
-    }
-
-    @Override
-    public String cleanSchemaSql(String database){
-        return "DROP DATABASE IF EXISTS "+database;
-    }
 
     @Override
     public void createTable(String sqlText){

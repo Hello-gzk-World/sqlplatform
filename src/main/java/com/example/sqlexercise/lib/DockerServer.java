@@ -143,10 +143,7 @@ public class DockerServer {
         CreateContainerResponse response = this.client.createContainerCmd(Constants.DockerRelated.OPENGAUSS_IMAGE).withName(name).withPrivileged(true)
                 .withHostConfig(hostConfig)
                 .withExposedPorts(ExposedPort.tcp(5432))
-                .withEnv("GS_PASSWORD" + password).exec();
-        //Date: 2023.3.4
-        //Author: hewenbing
-        //经过测试，目前OB_ROOT_PASSWORD的环境配置并未生效，可能是镜像原因，obce-mini或许可以
+                .withEnv("GS_USERNAME=" + "root","GS_PASSWORD=" + password).exec();
         log.info(name + " container " + response.getId() + " is created successfully!");
     }
 

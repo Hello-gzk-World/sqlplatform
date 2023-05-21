@@ -37,6 +37,8 @@
 
               {{ item.description }}
             </div>
+            
+
             <div style="background-color: rgb(247,247,247);padding: 5px 1em 5px 2em;">
               <a-tag v-for="(tag,index) in item.tags"
                      color="blue"
@@ -48,6 +50,12 @@
               <div style="float: right;padding: 3px;align-items: center;display: flex">
                 <span>深色模式&nbsp</span>
                   <a-switch v-model:checked="darkTheme"/>
+              </div>
+
+              <div style="float: right;padding: 3px;align-items: center;display: flex">
+                <select v-model="selectedDriver">
+                      <option v-for="driver in databaseDrivers" :value="driver">{{ driver }}</option>
+                </select>
               </div>
 
             </div>
@@ -145,6 +153,8 @@ export default {
       restSubmitCd : 3,
       runTimer: '',
       submitTimer: '',
+      selectedDriver: 'MySQL',
+      databaseDrivers: ['MySQL', 'OpenGauss', 'OceanBase'],
     }
   },
   async mounted() {

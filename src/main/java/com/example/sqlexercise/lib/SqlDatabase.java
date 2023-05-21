@@ -112,15 +112,7 @@ public class SqlDatabase {
             try {
                 if (i == 1) {
                     log.info("Try to connect....");
-                    this.client= DriverEnum.of(this.driver).getClinet();
-//                    if (this.driver.equals("mysql")) {
-//                        this.client = new MysqlClient();
-//                    }else if(this.driver.equals("oceanbase")){
-//                        this.client = new OceanbaseClient();
-//                    }
-//                    else if(this.driver.equals("openGauss")){
-//                        this.client = new OpenGaussClient();
-//                    }
+                    this.client= DriverEnum.of(this.driver).getClient();
                     this.client.init(this.config);
                     startTimer();
                 } else {

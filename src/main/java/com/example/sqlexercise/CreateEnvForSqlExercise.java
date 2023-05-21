@@ -97,12 +97,6 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
             }
             log.info("After checking, image " + Constants.DockerRelated.OPENGAUSS_IMAGE + " exists.");
 
-            // 检查 Redis 镜像
-//            image = dockerServer.getDockerImageByReference(Constants.DockerRelated.REDIS_IMAGE);
-//            if (image == null) {
-//                dockerServer.pullImageByRepository(Constants.DockerRelated.REDIS_IMAGE_NAME, Constants.DockerRelated.REDIS_IMAGE_TAG);
-//            }
-//            log.info("After checking, image " + Constants.DockerRelated.REDIS_IMAGE + " exists.");
             // 若生成容器信息
             UUID namespace = Generators.nameBasedGenerator(UUID.fromString(NAMESPACE_URL)).generate(SALT);
             List<DockerContainer> dockerMysqlContainers =
@@ -114,19 +108,14 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
             List<DockerContainer> dockerOpenGaussContainers =
                     createContainerInfos(dockerServer, namespace, Constants.DockerRelated.OPENGAUSS,
                             Constants.DockerRelated.OPENGAUSS_CONTAINER_DEFAULT_PORT, 1);
-//            List<DockerContainer> dockerRedisContainers =
-//                    createContainerInfos(dockerServer, namespace, Constants.DockerRelated.REDIS_IMAGE_NAME,
-//                            Constants.DockerRelated.REDIS_CONTAINER_DEFAULT_PORT, 1);
             // 检查dockerServer中现有容器实例情况
 //            checkExistingContainerInstance(dockerMysqlContainers, dockerServer, recreate);
 //            checkExistingContainerInstance(dockerOceanbaseContainers, dockerServer, recreate);
 //            checkExistingContainerInstance(dockerOpenGaussContainers, dockerServer, recreate);
-//            checkExistingContainerInstance(dockerRedisContainers, dockerServer, recreate);
             // 根据容器信息创建容器实例
 //            createMysqlContainerInstance(dockerMysqlContainers, dockerServer, server);
 //            createOceanbaseContainerInstance(dockerOceanbaseContainers, dockerServer, server);
 //            createOpenGaussContainerInstance(dockerOpenGaussContainers, dockerServer, server);
-//            createRedisContainerInstance(dockerRedisContainers, dockerServer, server);
         }
     }
 
@@ -216,7 +205,7 @@ public class CreateEnvForSqlExercise implements ApplicationRunner {
             dockerServer.createDockerContainerForOpenGauss(container.getName(), container.getPassword(), container.getPort());
             //以下部分已改成Spring异步执行，不阻塞主线程
             SqlDatabase sqlDatabase =
-                    this.pool.getSqlDatabase("postgres", "openGauss", dockerServer.getId(), container.getIndex());
+                    this.pool.getSqlDatabase("", "openGauss", dockerServer.getId(), container.getIndex());
             myAsyncService.asyncInitOpenGaussContainer(dockerServer, container, sqlDatabase);
         }
     }
